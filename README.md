@@ -15,7 +15,7 @@ A SSRF-Tool written in golang
 
 ![GitHub Logo](carbon1.png)
   
-![GitHub Logo](carbon.png)
+![GitHub Logo](carbon2.png)
 
 ***
 
