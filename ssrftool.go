@@ -16,6 +16,7 @@ import (
 . "github.com/logrusorgru/aurora"
 )
 
+
 func main () {
 
 	banner:=`
@@ -30,8 +31,8 @@ func main () {
         `
 
 	gologger.Printf("%s\n\n", banner)
-	gologger.Warningf("Use with caution. You are responsible for your actions\n")
-	gologger.Warningf("Developers assume no liability and are not responsible for any misuse or damage.\n")
+	gologger.Infof("Use with caution. You are responsible for your actions\n")
+	gologger.Infof("Developers assume no liability and are not responsible for any misuse or damage.\n\n")
 
 
 	var concurrency int
@@ -44,17 +45,18 @@ func main () {
 	flag.StringVar(&payloads, "pL", "", "The payloads list")
 	flag.StringVar(&match, "m", "", "Match the response with a pattern (e.g.) 'Success:'")
 	flag.BoolVar(&appendMode, "a", false, "Append the payload to the parameter")
-	flag.BoolVar(&paths, "p", false, "Only test ssrf in paths")
-	flag.BoolVar(&silent, "s", false, "Only print vulnerable hosts")
+	flag.BoolVar(&paths, "p", false, "(true or false) for testing paths or parameters")
+	flag.BoolVar(&silent, "s", false, "silent output")
 	flag.Parse()
 
 	if payloads != "" && match != "" {
 
 		s := spinner.New(spinner.CharSets[9], 100*time.Millisecond)  // Build our new spinner
-		s.Suffix =" Please be patient."
+		s.Suffix =" Please be patient"
 		s.Start()
+		s.Color("red") // Set the spinner color to red
 		time.Sleep(time.Second * 2)
-		s.Stop()
+		if silent == false { s.Stop() }
 		// Continue Create the goroutine
 		var wg sync.WaitGroup
 		for i:=0; i<=concurrency; i++ {
@@ -73,6 +75,9 @@ func main () {
 
 // This is used to test for ssrf
 func test_ssrf(payloads string, match string, appendMode bool, silent bool, paths bool) {
+	
+	payloadList :=make([]string, 0)
+	links := make([]string, 0)
 
 	file,err := os.Open(payloads)
 
@@ -84,28 +89,62 @@ func test_ssrf(payloads string, match string, appendMode bool, silent bool, path
 
 	time.Sleep(time.Millisecond * 10)
 	scanner:=bufio.NewScanner(os.Stdin)
-
 	pScanner:=bufio.NewScanner(file)
+	
+	s := spinner.New(spinner.CharSets[9], 100*time.Millisecond)  // Build our new spinner
+        s.Suffix =" Generating links to test"
+        s.Start()
+        s.Color("red") // Set the spinner color to red
+        time.Sleep(time.Second * 2)
 
-	for scanner.Scan() {
-		for pScanner.Scan() {
-			link:=scanner.Text()
-			payload:=pScanner.Text()
+	for {
+		scanner.Scan()
+		text:=scanner.Text()
+		if len(text) != 0 {
+			links = append(links,text)
+		}else {
+			break
+		}
+	}
+	s.Stop()
 
+	
+        s1 := spinner.New(spinner.CharSets[9], 100*time.Millisecond)  // Build our new spinner
+        s1.Suffix =" Generating Payloads from list"
+        s1.Start()
+        s1.Color("red") // Set the spinner color to red
+        time.Sleep(time.Second * 2)
+
+	for {
+
+		pScanner.Scan()
+                text:=pScanner.Text()
+                if len(text) != 0 {
+                       	payloadList = append(payloadList,text)
+                }else {
+                        break
+                }
+
+	}
+	s1.Stop()
+
+	for _,p:=range payloadList {
+		for _,l:= range links {
+			link:=l			
+			payload:=p
 			u,err := url.Parse(link)
 			if err != nil {
-				return
+				fmt.Println(Bold(Red(">")), err)
 			}
 			if paths == false {
 
-
 				qs:=url.Values{}
 				for param, vv := range u.Query() {
-					if appendMode {
+					if appendMode == true {
 						qs.Set(param, vv[0]+payload)
 						u.RawQuery = qs.Encode()
                   		              	if silent == false {
-                                        		gologger.Infof("Testing: \t %s\n", u)
+							 fmt.Println(Bold(Red(">")), Bold(White(" Testing ")), Bold(White(u)))
                                 	      	}
                                 		make_request(u.String(), match)
 
@@ -114,7 +153,7 @@ func test_ssrf(payloads string, match string, appendMode bool, silent bool, path
 
 						u.RawQuery = qs.Encode()
                                 		if silent == false {
-                                       			gologger.Infof("Testing: \t %s\n", u)
+							fmt.Println(Bold(Red(">")), Bold(White(" Testing ")), Bold(White(u)))
                                 		}
         		                        make_request(u.String(), match)
 					}
@@ -122,15 +161,16 @@ func test_ssrf(payloads string, match string, appendMode bool, silent bool, path
 
 			}else {
 
-				newLink:=link+payload
+				newLink:=link+"/"+payload
 				if silent == false {
-                                        gologger.Infof("Testing: \t %s\n", newLink)
+					fmt.Println(Bold(Red(">")), Bold(White(" Testing ")), Bold(White(newLink)))
                                 }
                                 make_request(newLink, match)
 
 			}
 		}
 	}
+	os.Exit(1)
 }
 
 
