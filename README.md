@@ -7,7 +7,7 @@ A SSRF-Tool written in golang
 
 ### Install
 
-**`$ go get -u github.com/ethicalhackingplayground/ssrftool`**
+**`$ go get -u github.com/ethicalhackingplayground/ssrf-tool`**
 
 ![GitHub Logo](carbon1.png)
   
