@@ -56,7 +56,7 @@ func main () {
 		s.Start()
 		s.Color("red") // Set the spinner color to red
 		time.Sleep(time.Second * 2)
-		if silent == false { s.Stop() }
+		s.Stop()
 		// Continue Create the goroutine
 		var wg sync.WaitGroup
 		for i:=0; i<=concurrency; i++ {
