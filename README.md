@@ -18,7 +18,7 @@ A SSRF-Tool written in golang
 
 
 
-[![Image from Gyazo](https://i.gyazo.com/44ff89e18f473e337ba1e7cf9aa3d1fe.gif)](https://gyazo.com/44ff89e18f473e337ba1e7cf9aa3d1fe)
+[![Image from Gyazo](https://i.gyazo.com/d124748a3a0e4d2d535a520a88119299.gif)](https://gyazo.com/d124748a3a0e4d2d535a520a88119299)
 
 
 **If you get a bounty please support by buying me a coffee**
