@@ -15,6 +15,18 @@ A SSRF-Tool written in golang
 - Silent Mode
 ***
 
+### Note
+
+***
+Make sure when creating wordlists or finding ssrf with my tool that the domains are resolved.
+You can use:
+- httpx
+- httprobe
+- massdns
+
+To do so. 
+***
+
 ### Install
 
 **`$ go get -u github.com/ethicalhackingplayground/ssrf-tool`**
@@ -38,6 +50,13 @@ A SSRF-Tool written in golang
 
 ### Wordlist Creation
 **`$ echo "https://www.yahoo.com" | getJS -complete | ./ssrf-tool -w=true -s=false`**
+
+***
+
+***
+
+### Wordlist Creation With Subdomains
+**`$ subfinder -all -d paypal.com -silent | httpx -silent | getJS -complete | ./ssrf-tool -w=true -s=false`**
 
 ***
 
