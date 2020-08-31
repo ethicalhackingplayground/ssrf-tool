@@ -10,7 +10,7 @@ A SSRF-Tool written in golang
 - Fetch endpoints from Javascript files
 - Bruteforce parameters
 - Find SSRF in those parameters
-=
+- Match multiple patterns in the response
 
 
 ***
