@@ -12,11 +12,7 @@ A SSRF-Tool written in golang
 [![Image from Gyazo](https://i.gyazo.com/44ff89e18f473e337ba1e7cf9aa3d1fe.gif)](https://gyazo.com/44ff89e18f473e337ba1e7cf9aa3d1fe)
 
 
-```
-
-
-  ```
-  
+![GitHub Logo](carbon1.png)
   
 ![GitHub Logo](carbon.png)
 
