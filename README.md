@@ -14,7 +14,7 @@ A SSRF-Tool written in golang
 ![GitHub Logo](carbon.png)
 
 ### Fetch Links from JS with Subfinder
-**`$ subfinder -d yahoo.com -silent | ./ssrf-tool -pL payloads.txt -s=false -p=true -m '"Code" : "Success"'`**
+**`$ subfinder -d yahoo.com -silent | httpx -silent | ./ssrf-tool -pL payloads.txt -s=false -p=true -m '"Code" : "Success"'`**
 
 
 
