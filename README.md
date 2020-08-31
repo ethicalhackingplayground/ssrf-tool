@@ -25,7 +25,7 @@ A SSRF-Tool written in golang
 ***
 
 
-[![Image from Gyazo](https://i.gyazo.com/d124748a3a0e4d2d535a520a88119299.gif)](https://gyazo.com/d124748a3a0e4d2d535a520a88119299)
+[![Image from Gyazo](https://i.gyazo.com/4b74c62de553e2cda60e45f51c0fc8a4.gif)](https://gyazo.com/4b74c62de553e2cda60e45f51c0fc8a4)
 
 
 **If you get a bounty please support by buying me a coffee**
