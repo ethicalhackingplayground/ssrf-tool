@@ -9,9 +9,6 @@ A SSRF-Tool written in golang
 
 **`$ go get -u github.com/ethicalhackingplayground/ssrftool`**
 
-[![Image from Gyazo](https://i.gyazo.com/44ff89e18f473e337ba1e7cf9aa3d1fe.gif)](https://gyazo.com/44ff89e18f473e337ba1e7cf9aa3d1fe)
-
-
 ![GitHub Logo](carbon1.png)
   
 ![GitHub Logo](carbon.png)
@@ -20,6 +17,8 @@ A SSRF-Tool written in golang
 **`$ subfinder -d yahoo.com -silent | ./ssrf-tool -pL payloads.txt -s=false -p=true -m '"Code" : "Success"'`**
 
 
+
+[![Image from Gyazo](https://i.gyazo.com/44ff89e18f473e337ba1e7cf9aa3d1fe.gif)](https://gyazo.com/44ff89e18f473e337ba1e7cf9aa3d1fe)
 
 
 **If you get a bounty please support by buying me a coffee**
