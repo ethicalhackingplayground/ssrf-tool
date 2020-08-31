@@ -187,6 +187,8 @@ func search_with_regex() []string {
         links=append(links, "example.com" + "\n")
         links=append(links, "127.0.0.1:80" + "\n")
         links=append(links, "169.254.169.254/computeMetadata/v1/" + "\n")
+ 	links=append(links, "169.254.169.254/latest/meta-data/iam/security-credentials/flaws/" + "\n")
+	links=append(links, "http://169.254.169.254/latest/meta-data/iam/security-credentials/flaws/" + "\n")
         links=append(links, "127.0.0.1:443" + "\n")
         links=append(links, "127.0.0.1:22" + "\n")
         links=append(links, "localhost/admin" + "\n")
