@@ -164,7 +164,7 @@ func search_with_regex() []string {
 			if strings.Contains("prod", matches[0]) {
                                 links=append(links, matches[0] + "\n")
                         }
-			if strings.Contains("jira", matches[0]) {
+			if strings.Contains("internal", matches[0]) {
                                 links=append(links, matches[0] + "\n")
                         }
 			if strings.Contains("corp", matches[0]) {
@@ -187,8 +187,6 @@ func search_with_regex() []string {
         links=append(links, "example.com" + "\n")
         links=append(links, "127.0.0.1:80" + "\n")
         links=append(links, "169.254.169.254/computeMetadata/v1/" + "\n")
- 	links=append(links, "169.254.169.254/latest/meta-data/iam/security-credentials/flaws/" + "\n")
-	links=append(links, "http://169.254.169.254/latest/meta-data/iam/security-credentials/flaws/" + "\n")
         links=append(links, "127.0.0.1:443" + "\n")
         links=append(links, "127.0.0.1:22" + "\n")
         links=append(links, "localhost/admin" + "\n")
@@ -258,8 +256,8 @@ func test_ssrf(payloads string, match string, appendMode bool, silent bool, path
 	}
 	s1.Stop()
 
-	for _,p:=range payloadList {
-		for _,l:= range links {
+	for _,l:=range links {
+		for _,p:= range payloadList {
 			link:=l			
 			payload:=p
 			u,err := url.Parse(link)
