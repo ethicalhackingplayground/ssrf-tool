@@ -11,22 +11,27 @@ import (
 "net/http"
 "net/url"
 "flag"
-"log"
 "github.com/briandowns/spinner"
+"github.com/projectdiscovery/gologger"
+. "github.com/logrusorgru/aurora"
 )
 
 func main () {
 
-	fmt.Println(`
-	
-                         
- _____ _____ _____ _____ 
+	banner:=`
+
+
+ _____ _____ _____ _____
 |   __|   __| __  |   __|
 |__   |__   |    -|   __|
-|_____|_____|__|__|__|   
-    1.0 - @z0idsec          
-               
-	`)
+|_____|_____|__|__|__|
+    1.0 - @z0idsec
+
+        `
+
+	gologger.Printf("%s\n\n", banner)
+	gologger.Warningf("Use with caution. You are responsible for your actions\n")
+	gologger.Warningf("Developers assume no liability and are not responsible for any misuse or damage.\n")
 
 
 	var concurrency int
@@ -46,9 +51,10 @@ func main () {
 	if payloads != "" && match != "" {
 
 		s := spinner.New(spinner.CharSets[9], 100*time.Millisecond)  // Build our new spinner
-		s.Suffix =" Testing for SSRF.."
+		s.Suffix =" Please be patient."
 		s.Start()
-
+		time.Sleep(time.Second * 2)
+		s.Stop()
 		// Continue Create the goroutine
 		var wg sync.WaitGroup
 		for i:=0; i<=concurrency; i++ {
@@ -59,6 +65,8 @@ func main () {
 			}()
 			wg.Wait()
 		}
+	}else {
+		flag.PrintDefaults()
 	}
 }
 
@@ -69,7 +77,7 @@ func test_ssrf(payloads string, match string, appendMode bool, silent bool, path
 	file,err := os.Open(payloads)
 
 	if err != nil {
-		log.Fatal("File could not be read")
+		gologger.Errorf("File could not be read")
 	}
 
 	defer file.Close()
@@ -97,7 +105,7 @@ func test_ssrf(payloads string, match string, appendMode bool, silent bool, path
 						qs.Set(param, vv[0]+payload)
 						u.RawQuery = qs.Encode()
                   		              	if silent == false {
-                                        		fmt.Printf("[+] Testing: \t %s\n", u)
+                                        		gologger.Infof("Testing: \t %s\n", u)
                                 	      	}
                                 		make_request(u.String(), match)
 
@@ -106,7 +114,7 @@ func test_ssrf(payloads string, match string, appendMode bool, silent bool, path
 
 						u.RawQuery = qs.Encode()
                                 		if silent == false {
-                                       			fmt.Printf("[+] Testing: \t %s\n", u)
+                                       			gologger.Infof("Testing: \t %s\n", u)
                                 		}
         		                        make_request(u.String(), match)
 					}
@@ -116,7 +124,7 @@ func test_ssrf(payloads string, match string, appendMode bool, silent bool, path
 
 				newLink:=link+payload
 				if silent == false {
-                                        fmt.Printf("[+] Testing: \t %s\n", newLink)
+                                        gologger.Infof("Testing: \t %s\n", newLink)
                                 }
                                 make_request(newLink, match)
 
@@ -148,8 +156,8 @@ func make_request(url string, match string) {
 		}
 		bodyString := string(bodyBytes)
 		if strings.Contains(bodyString, match) {
-			fmt.Println(bodyString + "\n")
-			fmt.Println(url + " IS VULNERABLE")
+			fmt.Println(Bold(Cyan(bodyString)))
+			fmt.Println(Bold(Red("VULNERABLE: " + url)))
 		}
 	}
 }
