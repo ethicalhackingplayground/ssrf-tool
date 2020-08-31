@@ -60,8 +60,6 @@ To do so.
 
 ***
 
-***
-
 ### Wordlist Creation With Subdomains
 **`$ subfinder -all -d paypal.com -silent | httpx -silent | getJS -complete | ./ssrf-tool -w=true -s=false`**
 
