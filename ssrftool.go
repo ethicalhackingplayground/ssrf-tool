@@ -102,7 +102,9 @@ func test_ssrf(payloads string, match string, appendMode bool, silent bool, path
 				qs:=url.Values{}
 				for param, vv := range u.Query() {
 					if appendMode {
+						
 						qs.Set(param, vv[0]+payload)
+						
 						u.RawQuery = qs.Encode()
                   		              	if silent == false {
                                         		gologger.Infof("Testing: \t %s\n", u)
