@@ -27,7 +27,7 @@ A SSRF-Tool written in golang
 
 ***
 
-### Fetch Links from JS with Subfinder
+### Find SSRF with Subfinder,httpx
 **`$ subfinder -d yahoo.com -silent | httpx -silent | ./ssrf-tool -pL payloads.txt -s=false -p=true -m '"Code" : "Success"'`**
 
 ***
