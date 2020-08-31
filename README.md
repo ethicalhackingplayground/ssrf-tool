@@ -32,6 +32,9 @@ Usage of ./ssrf-tool:
         The payloads list
   -s    Only print vulnerable hosts
   ```
+  
+  
+![GitHub Logo](carbon.png)
 
 ### Fetch Links from JS with Subfinder
 **`$ subfinder -d yahoo.com -silent | ./ssrf-tool -pL payloads.txt -s=false -p=true -m '"Code" : "Success"'`**
