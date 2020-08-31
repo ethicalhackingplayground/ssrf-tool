@@ -5,6 +5,13 @@ A SSRF-Tool written in golang
 
 **Version 1.0**
 
+***
+### 🔥 Upcoming Features 🔥
+- Fetch endpoints from Javascript files
+- Bruteforce parameters
+- Find SSRF in those parameters
+***
+
 
 ***
 ### Features
