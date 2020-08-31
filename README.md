@@ -7,30 +7,14 @@ A SSRF-Tool written in golang
 
 ### Install
 
-**`$ go get -u github.com/ethicalhackingplayground/ssrf-tool`**
+**`$ go get -u github.com/ethicalhackingplayground/ssrftool`**
 
 [![Image from Gyazo](https://i.gyazo.com/44ff89e18f473e337ba1e7cf9aa3d1fe.gif)](https://gyazo.com/44ff89e18f473e337ba1e7cf9aa3d1fe)
 
 
 ```
 
- _____ _____ _____ _____
-|   __|   __| __  |   __|
-|__   |__   |    -|   __|
-|_____|_____|__|__|__|
-    1.0 - @z0idsec
 
-
-Usage of ./ssrf-tool:
-  -a    Append the payload to the parameter
-  -c int
-        Set the concurrency for greater speeds (default 30)
-  -m string
-        Match the response with a pattern (e.g.) 'Success:'
-  -p    Only test ssrf in paths
-  -pL string
-        The payloads list
-  -s    Only print vulnerable hosts
   ```
   
   
