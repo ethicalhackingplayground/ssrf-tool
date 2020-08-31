@@ -164,7 +164,7 @@ func search_with_regex() []string {
 			if strings.Contains("prod", matches[0]) {
                                 links=append(links, matches[0] + "\n")
                         }
-			if strings.Contains("internal", matches[0]) {
+			if strings.Contains("jira", matches[0]) {
                                 links=append(links, matches[0] + "\n")
                         }
 			if strings.Contains("corp", matches[0]) {
