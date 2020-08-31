@@ -7,13 +7,22 @@ A SSRF-Tool written in golang
 
 ***
 
+***
+### Features
+- Wordlist Creation
+- Inject in every parameter one by one
+- Very fast speed
+- Inject into paths
+- Silent Mode
+***
+
 ### Install
 
 **`$ go get -u github.com/ethicalhackingplayground/ssrf-tool`**
 
 ***
 
-![GitHub Logo](carbon3.png)
+![GitHub Logo](carbon4.png)
   
 ![GitHub Logo](carbon2.png)
 
@@ -24,8 +33,17 @@ A SSRF-Tool written in golang
 
 ***
 
-
 [![Image from Gyazo](https://i.gyazo.com/4b74c62de553e2cda60e45f51c0fc8a4.gif)](https://gyazo.com/4b74c62de553e2cda60e45f51c0fc8a4)
+
+***
+
+### Wordlist Creation
+**`$ echo "https://www.yahoo.com" | getJS -complete | ./ssrf-tool -w=true -s=false`**
+
+***
+
+[![Image from Gyazo](https://i.gyazo.com/9e50667879ebc2e2d834d2db8e058cc9.gif)](https://gyazo.com/9e50667879ebc2e2d834d2db8e058cc9)
+
 
 
 **If you get a bounty please support by buying me a coffee**
