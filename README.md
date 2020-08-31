@@ -5,17 +5,24 @@ A SSRF-Tool written in golang
 
 **Version 1.0**
 
+***
+
 ### Install
 
 **`$ go get -u github.com/ethicalhackingplayground/ssrf-tool`**
+
+***
 
 ![GitHub Logo](carbon1.png)
   
 ![GitHub Logo](carbon.png)
 
+***
+
 ### Fetch Links from JS with Subfinder
 **`$ subfinder -d yahoo.com -silent | httpx -silent | ./ssrf-tool -pL payloads.txt -s=false -p=true -m '"Code" : "Success"'`**
 
+***
 
 
 [![Image from Gyazo](https://i.gyazo.com/d124748a3a0e4d2d535a520a88119299.gif)](https://gyazo.com/d124748a3a0e4d2d535a520a88119299)
