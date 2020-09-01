@@ -47,7 +47,7 @@ To do so.
 
 ![GitHub Logo](carbon5.png)
   
-![GitHub Logo](carbon2.png)
+![GitHub Logo](carbon6.png)
 
 ***
 
