@@ -211,7 +211,7 @@ func fetch_endpoints_params(payload string, currUrl string, paramsFile string, s
 	client:=&http.Client{}
 
 	s := spinner.New(spinner.CharSets[9], 100*time.Millisecond)  // Build our new spinner
-        s.Suffix = " Searching forcing endpoints & parameters"
+        s.Suffix = " Searching endpoints & parameters"
         s.Start()
         s.Color("red") // Set the spinner color to red
         time.Sleep(time.Second * 2)
