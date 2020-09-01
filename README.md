@@ -12,7 +12,7 @@ A SSRF-Tool written in golang
 - Find SSRF in those parameters ✅ 
 - Match multiple patterns in the response ✅ 
 - Check Post Request ❌
-
+- Check Headers ❌
 
 ***
 ### Features
@@ -37,6 +37,8 @@ You can use:
 - massdns
 
 To do so. 
+
+Also, Make sure to customerise your patterns file for greater results
 ***
 
 ### Install
