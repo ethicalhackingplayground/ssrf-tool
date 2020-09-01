@@ -7,10 +7,11 @@ A SSRF-Tool written in golang
 
 ***
 ### 🔥 Upcoming Features 🔥
-- Fetch endpoints from Javascript files
-- Bruteforce parameters
-- Find SSRF in those parameters
-- Match multiple patterns in the response
+- Fetch endpoints from Javascript files ✅ 
+- Bruteforce parameters ✅ 
+- Find SSRF in those parameters ✅ 
+- Match multiple patterns in the response ✅ 
+- Check Post Request ❌
 
 
 ***
@@ -20,6 +21,10 @@ A SSRF-Tool written in golang
 - Very fast speed
 - Inject into paths
 - Silent Mode
+- Fetch endpoints from Javascript files 
+- Bruteforce parameters  
+- Find SSRF in those parameters 
+- Match multiple patterns in the response
 ***
 
 ### Note
@@ -40,7 +45,7 @@ To do so.
 
 ***
 
-![GitHub Logo](carbon4.png)
+![GitHub Logo](carbon5.png)
   
 ![GitHub Logo](carbon2.png)
 
@@ -56,14 +61,31 @@ To do so.
 ***
 
 ### Wordlist Creation
-**`$ echo "https://www.yahoo.com" | getJS -complete | ./ssrf-tool -w=true -s=false`**
+**`$ echo "https://www.twitter.com" | getJS -complete | ./ssrf-tool -gen=true`**
+
+**Can be used with other tools like subfinder & amass**
 
 ***
 
-### Wordlist Creation With Subdomains
-**`$ subfinder -all -d paypal.com -silent | httpx -silent | getJS -complete | ./ssrf-tool -w=true -s=false`**
+### BruteForce For SSRF
+**`$ echo "https://www.twitter.com" | getJS -complete | ./ssrf-tool -domains domains -silent=false -brute=true -gen=true -patterns patterns.txt  -parameters params.txt`**
+
+**Can be used with other tools like subfinder & amass**
 
 ***
+
+### Testing The Paths
+**`$ ./ssrf-tool -domains domains -silent=false -patterns patterns.txt -paths=true  -brute=false -payloads ssrf.txt`**
+
+**Can be used with other tools like subfinder & amass**
+
+### Testing Parameters with waybackurls
+**`$ echo "twitter.com" | waybackurls >> domains  ; ./ssrf-tool -domains domains -silent=false -paths=false -payloads ssrf.txt`**
+
+**Can be used with other tools like subfinder & amass**
+
+***
+
 
 [![Image from Gyazo](https://i.gyazo.com/9e50667879ebc2e2d834d2db8e058cc9.gif)](https://gyazo.com/9e50667879ebc2e2d834d2db8e058cc9)
 
