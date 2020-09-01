@@ -39,17 +39,25 @@ func main () {
 	var concurrency int
 	var payloads string
 	var match string
+	var matchList string
 	var appendMode bool
 	var paths bool
 	var silent bool
 	var wordlist bool
-	flag.IntVar(&concurrency, "c", 30, "Set the concurrency for greater speeds")
-	flag.StringVar(&payloads, "pL", "", "The payloads list")
-	flag.StringVar(&match, "m", "", "Match the response with a pattern (e.g.) 'Success:'")
-	flag.BoolVar(&appendMode, "a", false, "Append the payload to the parameter")
-	flag.BoolVar(&paths, "p", false, "(true or false) for testing paths or parameters")
-	flag.BoolVar(&wordlist, "w", false, "Generate a SSRF wordlist to be used")
-	flag.BoolVar(&silent, "s", false, "silent output")
+	var brute bool
+	var domains string
+	var paramsList string
+	flag.IntVar(&concurrency, "concurrency", 30, "Set the concurrency for greater speeds")
+	flag.StringVar(&domains, "domains", "", "The list of subdomains")
+	flag.StringVar(&paramsList, "parameters", "", "The parameters list")
+	flag.StringVar(&payloads, "payloads", "", "The payloads list")
+	flag.StringVar(&match, "pattern", "", "Match the response with a pattern (e.g.) 'Success:'")
+	flag.StringVar(&matchList, "patterns", "", "Match the response with a list of patterns")
+	flag.BoolVar(&appendMode, "append", false, "Append the payload to the parameter")
+	flag.BoolVar(&paths, "paths", false, "(true or false) for testing paths or parameters")
+	flag.BoolVar(&wordlist, "gen", false, "Generate a SSRF wordlist to be used")
+	flag.BoolVar(&brute, "brute", false, "Brute force parameters against endpoints to find SSRF")
+	flag.BoolVar(&silent, "silent", false, "silent output")
 	flag.Parse()
 
 	if wordlist == true {
@@ -59,7 +67,8 @@ func main () {
 
 	}else {
 		
-		if (payloads != "" && match != "") {
+		// Check to see if these flags are used 
+		if (payloads != ""  && domains != "") || (match != "" || matchList != "") {
 
          	        s := spinner.New(spinner.CharSets[9], 100*time.Millisecond)  // Build our new spinner
                		s.Suffix =" Please be patient"
@@ -72,7 +81,10 @@ func main () {
                 	for i:=0; i<=concurrency; i++ {
                        		wg.Add(1)
                         	go func () {
-                                	test_ssrf(payloads, match, appendMode, silent, paths)
+
+					// Test For SSRF
+                                	test_ssrf(domains, paramsList, payloads, match, matchList, appendMode, silent, paths, brute)
+
                                 	wg.Done()
                         	}()
                         	wg.Wait()
@@ -81,39 +93,24 @@ func main () {
 	}
 }
 
-// Generate the wordlist from javascript
-func generate_wordlist() {
-
-	s := spinner.New(spinner.CharSets[9], 100*time.Millisecond)  // Build our new spinner
-	s.Suffix =" Generating SSRF wordlist"
-        s.Start()
-        s.Color("red") // Set the spinner color to red
-        time.Sleep(time.Second * 2)
-        s.Stop()
-
-	payloads:=search_with_regex()
-	fmt.Println(Sprintf(Cyan("Wordlist is %d lines"), Red(len(payloads))))
-	save_wordlist(payloads)
-}
 
 // Save the wordlist
-func save_wordlist(payloads []string) {
+func save_to_file(data []string, suffix string, filename string) {
  	
 	s := spinner.New(spinner.CharSets[9], 100*time.Millisecond)  // Build our new spinner
-        s.Suffix =" Saving wordlist as ssrf.txt"
+        s.Suffix = suffix
         s.Start()
         s.Color("red") // Set the spinner color to red
         time.Sleep(time.Second * 2)
 
 
-	f,err:=os.Create("ssrf.txt")
+	f,err:=os.Create(filename)
 	if err != nil {
 		fmt.Println(Bold(Red(err)))
 		return
 	}
-	for _,v := range payloads{
-		fmt.Println(v)
-		_,err := f.WriteString(v)
+	for _,v := range data {
+		_,err := f.WriteString(v + "\n")
 		if err != nil {
 			fmt.Println(Bold(Red(err)))
 			f.Close()
@@ -125,15 +122,18 @@ func save_wordlist(payloads []string) {
 }
 
 // Search through all javascript for domains
-func search_with_regex() []string {
+func search_for_links() []string {
 
 	var links=make([]string, 0)
+	var jsFiles=make([]string, 0)
 	client:= &http.Client{}
 	
 
 	scanner:=bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		jsLink:=scanner.Text()
+		jsFiles=append(jsFiles, jsLink)
+
 		req,err:=http.NewRequest("GET", jsLink,nil)
 		if err != nil {
 			return nil
@@ -175,6 +175,7 @@ func search_with_regex() []string {
                         }
 		}
 	}
+
 	// Append some other payloads
         links=append(links, "http://example.com" + "\n")
         links=append(links, "http://127.0.0.1:80" + "\n")
@@ -194,30 +195,151 @@ func search_with_regex() []string {
         links=append(links, "169.254.169.254" + "\n")
         links=append(links, "[::]:22/" + "\n")
 
+	// Save the JS files.
+	save_to_file(jsFiles, " Saving JS Files for later use", "jsfiles.txt")
+
 	return links
 }
 
 
 
+// Search endpoints & parameters, test for ssrf
+func fetch_endpoints_params(payload string, currUrl string, paramsFile string, silent bool, matches string, match string)  {
 
+	var endpoints  = make([]string, 0)
+
+	client:=&http.Client{}
+
+	s := spinner.New(spinner.CharSets[9], 100*time.Millisecond)  // Build our new spinner
+        s.Suffix = " Searching forcing endpoints & parameters"
+        s.Start()
+        s.Color("red") // Set the spinner color to red
+        time.Sleep(time.Second * 2)
+	s.Stop()
+	jsFile,err := os.Open("jsfiles.txt")
+	if err != nil {
+		fmt.Println(Bold(Red("[!] Could not read file (maybe permission issue)")))
+		return
+	}
+	jsScanner := bufio.NewScanner(jsFile)
+	for jsScanner.Scan() {
+		jsLink:=jsScanner.Text()
+		req,err:=http.NewRequest("GET", jsLink, nil)
+		if err != nil {
+			return
+		}
+		resp,err:= client.Do(req)
+		if err != nil {
+			return
+		}
+		bodyBytes,err:=ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return
+		}
+		bodyString:=string(bodyBytes)
+		
+		 // Search for all links
+                re:=regexp.MustCompile(`(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]`)
+                matches:=re.FindStringSubmatch(bodyString)		
+		if matches != nil {
+			u,_ := url.Parse(matches[0])
+			endpoints=append(endpoints, u.Path)
+		}
+	}	
+	save_to_file(endpoints, " Saving Endpoints to endpoints.txt", "endpoints.txt")
+
+	// Brute Force for SSRF
+	brute_force_for_ssrf(payload, currUrl, "endpoints.txt", paramsFile, matches, match, silent)
+}
+
+// Generate the wordlist from javascript
+func generate_wordlist() {
+
+        s := spinner.New(spinner.CharSets[9], 100*time.Millisecond)  // Build our new spinner
+        s.Suffix =" Generating SSRF wordlist"
+        s.Start()
+        s.Color("red") // Set the spinner color to red
+        time.Sleep(time.Second * 2)
+        s.Stop()
+
+        payloads:=search_for_links()
+        fmt.Println(Sprintf(Cyan("SSRF Wordlist is %d lines"), Red(len(payloads))))
+        save_to_file(payloads, " Saving wordlist as ssrf.txt", "ssrf.txt")
+}
+
+// Brute forces for SSRF vulnerabilities
+func brute_force_for_ssrf(payload string, url string, endpoints string, parameters string, matches string, match string, silent bool) {
+	endpointsF,err:=os.Open(endpoints)
+	if err != nil { return }
+	parametersF,err:= os.Open(parameters)
+	if err != nil { return }
+
+
+	es := bufio.NewScanner(endpointsF)
+	ps := bufio.NewScanner(parametersF)
+
+	for es.Scan (){
+		for ps.Scan() {
+
+			newLink:=url+"/"+es.Text()+"/?"+ps.Text()+"="+payload
+	
+			if silent == false {
+            			fmt.Println(Bold(Red(">")), Bold(White(" Testing ")), Bold(White(newLink)))
+       			}
+   			client:=&http.Client{}
+      			req,err:=http.NewRequest("GET", url, nil)
+      			if err != nil {
+          			return
+        		}
+
+        		resp,err:=client.Do(req)
+        		if err != nil {
+        		      	return
+        		}
+
+       			bodyBytes,err  := ioutil.ReadAll(resp.Body)
+        		if err != nil {
+        			return
+       			}
+        		bodyString := string(bodyBytes)
+			if match != "" {
+
+				if strings.Contains(bodyString, match) {
+        				fmt.Println(Bold(Cyan(bodyString)))
+                			fmt.Println(Bold(Red("VULNERABLE: " + url)))
+				}
+        		}
+			if matches != "" {
+				file,err:=os.Open(matches)
+				if err != nil { return }
+				scanner:=bufio.NewScanner(file)
+				for scanner.Scan() {
+					if strings.Contains(bodyString, scanner.Text()) {
+                        			fmt.Println(Bold(Cyan(bodyString)))
+                                		fmt.Println(Bold(Red("VULNERABLE: " + url)))
+						
+            				}
+				}
+			}
+		}
+	}
+}
 
 
 // This is used to test for ssrf
-func test_ssrf(payloads string, match string, appendMode bool, silent bool, paths bool) {
+func test_ssrf(domains string, paramsFile string, payloads string, match string, matchList string, appendMode bool, silent bool, paths bool, brute bool) {
 	
 	payloadList :=make([]string, 0)
 	links := make([]string, 0)
 
-	file,err := os.Open(payloads)
-
+	file,err:=os.Open(payloads)
 	if err != nil {
-		gologger.Errorf("File could not be read")
+		return
 	}
-
-	defer file.Close()
-
 	time.Sleep(time.Millisecond * 10)
-	scanner:=bufio.NewScanner(os.Stdin)
+	domainsF,err:=os.Open(domains)
+	if err != nil { return }
+	scanner:=bufio.NewScanner(domainsF)
 	pScanner:=bufio.NewScanner(file)
 	
 	s := spinner.New(spinner.CharSets[9], 100*time.Millisecond)  // Build our new spinner
@@ -265,9 +387,20 @@ func test_ssrf(payloads string, match string, appendMode bool, silent bool, path
 			if err != nil {
 				fmt.Println(Bold(Red(">")), err)
 			}
+			if brute == true {
+				if paramsFile == "" {
+					fmt.Println(Bold(Red("> Make sure to specify the parameters wordlist")))
+					os.Exit(1)
+				}
+				generate_wordlist()
+
+				// BruteForce For SSRF
+				fetch_endpoints_params(payload, link, paramsFile, silent, matchList, match)			
+
+			}
 			if paths == false {
 
-				qs:=url.Values{}
+				qs:=url.Values{} 
 				for param, vv := range u.Query() {
 					if appendMode == true {
 						qs.Set(param, vv[0]+payload)
@@ -275,7 +408,7 @@ func test_ssrf(payloads string, match string, appendMode bool, silent bool, path
                   		              	if silent == false {
 							 fmt.Println(Bold(Red(">")), Bold(White(" Testing ")), Bold(White(u)))
                                 	      	}
-                                		make_request(u.String(), match)
+                                		make_request(u.String(), match, matchList)
 
 					}else {
 						qs.Set(param, payload)
@@ -284,7 +417,7 @@ func test_ssrf(payloads string, match string, appendMode bool, silent bool, path
                                 		if silent == false {
 							fmt.Println(Bold(Red(">")), Bold(White(" Testing ")), Bold(White(u)))
                                 		}
-        		                        make_request(u.String(), match)
+        		                        make_request(u.String(), match, matchList)
 					}
 				}					
 
@@ -294,7 +427,7 @@ func test_ssrf(payloads string, match string, appendMode bool, silent bool, path
 				if silent == false {
 					fmt.Println(Bold(Red(">")), Bold(White(" Testing ")), Bold(White(newLink)))
                                 }
-                                make_request(newLink, match)
+                                make_request(newLink, match, matchList)
 
 			}
 		}
@@ -304,7 +437,7 @@ func test_ssrf(payloads string, match string, appendMode bool, silent bool, path
 
 
 // Making a request checking the output for vulnerabilities
-func make_request(url string, match string) {
+func make_request(url string, match string, matchList string) {
 	
 	client:=&http.Client{}
 	req,err:=http.NewRequest("GET", url, nil)
@@ -327,6 +460,27 @@ func make_request(url string, match string) {
 		if strings.Contains(bodyString, match) {
 			fmt.Println(Bold(Cyan(bodyString)))
 			fmt.Println(Bold(Red("VULNERABLE: " + url)))
+		}
+	}else {
+
+		bodyBytes,err  := ioutil.ReadAll(resp.Body)
+                if err != nil {
+                        return
+                }
+		bodyString := string(bodyBytes)
+
+		mF,err := os.Open(matchList)
+		if err != nil {
+			return
+		}
+		defer mF.Close()
+		mScanner:=bufio.NewScanner(mF)
+
+		for mScanner.Scan() {
+	                if strings.Contains(bodyString, mScanner.Text()) {
+        	                fmt.Println(Bold(Cyan(bodyString)))
+                	        fmt.Println(Bold(Red("VULNERABLE: " + url)))
+                	}
 		}
 	}
 }
