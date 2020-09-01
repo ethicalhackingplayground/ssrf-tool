@@ -51,8 +51,8 @@ To do so.
 
 ***
 
-### Find SSRF with Subfinder,httpx
-**`$ subfinder -d yahoo.com -silent | httpx -silent | ./ssrf-tool -pL payloads.txt -s=false -p=true -m '"Code" : "Success"'`**
+### Find SSRF in paths with Subfinder,httpx
+**`$ subfinder -d yahoo.com -silent | httpx -silent >> domains | ssrf-tool -domains domains -payloads ssrf.txt -silent=false -paths=true -patterns patterns.txt`**
 
 ***
 
@@ -61,26 +61,26 @@ To do so.
 ***
 
 ### Wordlist Creation
-**`$ echo "https://www.twitter.com" | getJS -complete | ./ssrf-tool -gen=true`**
+**`$ echo "https://www.twitter.com" | getJS -complete | ssrf-tool -gen=true`**
 
 **Can be used with other tools like subfinder & amass**
 
 ***
 
 ### BruteForce For SSRF
-**`$ echo "https://www.twitter.com" | getJS -complete | ./ssrf-tool -domains domains -silent=false -brute=true -gen=true -patterns patterns.txt  -parameters params.txt`**
+**`$ echo "https://www.twitter.com" | getJS -complete | ssrf-tool -domains domains -silent=false -brute=true -gen=true -patterns patterns.txt  -parameters params.txt`**
 
 **Can be used with other tools like subfinder & amass**
 
 ***
 
 ### Testing The Paths
-**`$ ./ssrf-tool -domains domains -silent=false -patterns patterns.txt -paths=true  -brute=false -payloads ssrf.txt`**
+**`$ ssrf-tool -domains domains -silent=false -patterns patterns.txt -paths=true  -brute=false -payloads ssrf.txt`**
 
 **Can be used with other tools like subfinder & amass**
 
 ### Testing Parameters with waybackurls
-**`$ echo "twitter.com" | waybackurls >> domains  ; ./ssrf-tool -domains domains -silent=false -paths=false -payloads ssrf.txt`**
+**`$ echo "twitter.com" | waybackurls >> domains  ; ssrf-tool -domains domains -silent=false -paths=false -payloads ssrf.txt`**
 
 **Can be used with other tools like subfinder & amass**
 
