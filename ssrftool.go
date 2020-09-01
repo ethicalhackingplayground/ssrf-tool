@@ -281,7 +281,7 @@ func brute_force_for_ssrf(payload string, url string, endpoints string, paramete
 	for es.Scan (){
 		for ps.Scan() {
 
-			newLink:=url+"/"+es.Text()+"/?"+ps.Text()+"="+payload
+			newLink:=url+es.Text()+"/?"+ps.Text()+"="+payload
 	
 			if silent == false {
             			fmt.Println(Bold(Red(">")), Bold(White(" Testing ")), Bold(White(newLink)))
