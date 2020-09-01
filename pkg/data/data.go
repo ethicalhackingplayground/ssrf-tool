@@ -20,13 +20,13 @@ func saveToFile(data []string, suffix string, filename string) {
 
         f, err := os.Create(filename)
         if err != nil {
-                fmt.Println(aurora.Bold(aurora.Red(err)))
+                fmt.Println(Bold(aRed(err)))
                 return
         }
         for _, v := range data {
                 _, err := f.WriteString(v + "\n")
                 if err != nil {
-                        fmt.Println(aurora.Bold(aurora.Red(err)))
+                        fmt.Println(Bold(Red(err)))
                         f.Close()
                         return
                 }
