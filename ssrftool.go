@@ -1,37 +1,34 @@
 package main
 
 import (
-"regexp"
-"fmt"
-"time"
-"sync"
-"bufio"
-"os"
-"strings"
-"io/ioutil"
-"net/http"
-"net/url"
-"flag"
-"github.com/briandowns/spinner"
-"github.com/projectdiscovery/gologger"
-. "github.com/logrusorgru/aurora"
+	"regexp"
+	"fmt"
+	"time"
+	"sync"
+	"bufio"
+	"os"
+	"strings"
+	"io/ioutil"
+	"net/http"
+	"net/url"
+	"flag"
+	"github.com/briandowns/spinner"
+	"github.com/projectdiscovery/gologger"
+	"github.com/logrusorgru/aurora"
 )
 
-
-func main () {
-
-	banner:=`
-
+const banner = `
 
  ▄▀▀ ▄▀▀ █▀▄ █▀
  ▄██ ▄██ █▀▄ █▀
-    1.0 - @z0idsec
-        `
+    1.0 - @z0idsec (fixed by @R0X4R)
+`
 
-	gologger.Printf("%s\n\n", banner)
-	gologger.Infof("Use with caution. You are responsible for your actions\n")
-	gologger.Infof("Developers assume no liability and are not responsible for any misuse or damage.\n\n")
-
+func main () {
+	gologger.Printf("%s\n", banner)
+	
+	gologger.Labelf("Use with caution. You are responsible for your actions\n")
+	gologger.Labelf("Developers assume no liability and are not responsible for any misuse or damage.\n\n")
 
 	var concurrency int
 	var payloads string
