@@ -42,9 +42,9 @@ Also, Make sure to customerise your patterns file for greater results
 ***
 
 ### Install
-
-**`$ go get -u github.com/ethicalhackingplayground/ssrf-tool`**
-
+```
+go install github.com/ethicalhackingplayground/ssrf-tool@latest
+```
 ***
 
 ![GitHub Logo](carbon5.png)
